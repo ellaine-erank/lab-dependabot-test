@@ -13,3 +13,5 @@ test
 
 
 5th test
+
+final lock test
