@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Scan Dependabot Alerts
-        uses: xalun/dependabot-alert-gate@v1
+        uses: m-radzikowski/dependabot-alert-gate@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           # This tells the script to FAIL if it finds Moderate or High alerts
