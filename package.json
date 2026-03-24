@@ -2,6 +2,6 @@
   "name": "my-first-secure-app",
   "version": "1.0.0",
   "dependencies": {
-    "express": "4.16.1"
+    "express": "4.20.0"
   }
 }
