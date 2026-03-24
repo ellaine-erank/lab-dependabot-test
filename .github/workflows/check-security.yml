@@ -4,28 +4,24 @@ on:
   pull_request:
     branches: [ "main" ]
 
+# ADD THIS SECTION TO FIX THE 403 ERROR
 permissions:
-  security-events: read
   contents: read
+  security-events: read
 
 jobs:
   check-alerts:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
       - name: Scan for Dependabot Alerts
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # This command asks GitHub: "Are there any open alerts for this repo?"
+          # The 'gh' tool now has the "ID Card" to see this resource
           ALERTS=$(gh api repos/${{ github.repository }}/dependabot/alerts?state=open)
           
-          # Check if the list of alerts is empty ([])
           if [ "$ALERTS" != "[]" ]; then
-            echo "❌ SECURITY ALERT: Open vulnerabilities found in dependencies!"
-            echo "$ALERTS" | jq '.[].security_advisory.summary'
+            echo "❌ SECURITY ALERT: Open vulnerabilities found!"
             exit 1
           else
             echo "✅ No open Dependabot alerts found."
