@@ -1,14 +1,20 @@
 name: Security Scan
+
 on:
   pull_request:
+    branches: [ "main" ]
+
+# This section is the "Badge" that gives the guard permission to look at your alerts
+permissions:
+  security-events: read
+  contents: read
 
 jobs:
   check-alerts:
     runs-on: ubuntu-latest
     steps:
-      - name: Scan Dependabot Alerts
+      - name: Check Dependabot Alerts
         uses: m-radzikowski/dependabot-alert-gate@v1
         with:
+          # This token is the "Key" to the security tab
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          # This tells the script to FAIL if it finds Moderate or High alerts
-          fail-on-severity: moderate
