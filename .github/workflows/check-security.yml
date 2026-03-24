@@ -5,28 +5,30 @@ on:
     branches: [ "main" ]
 
 permissions:
-  security-events: read
   contents: read
+  security-events: read
 
 jobs:
   check-alerts:
     runs-on: ubuntu-latest
+    # SMART RULE: If the PR is opened by Dependabot, skip this check.
+    # This prevents the "Fix" from being blocked by the "Vulnerability."
+    if: github.actor != 'dependabot[bot]'
+    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
       - name: Scan for Dependabot Alerts
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Use your Master Key (PAT) with 'repo', 'security_events', and 'workflow' scopes
+          GH_TOKEN: ${{ secrets.SECURITY_GATE_TOKEN }}
         run: |
-          # This command asks GitHub: "Are there any open alerts for this repo?"
+          # The 'gh' tool uses your token to check the Security API
           ALERTS=$(gh api repos/${{ github.repository }}/dependabot/alerts?state=open)
           
-          # Check if the list of alerts is empty ([])
           if [ "$ALERTS" != "[]" ]; then
             echo "❌ SECURITY ALERT: Open vulnerabilities found in dependencies!"
-            echo "$ALERTS" | jq '.[].security_advisory.summary'
+            # This lists the specific problems found
+            echo "$ALERTS" | jq -r '.[].security_advisory.summary' | sed 's/^/- /'
             exit 1
           else
-            echo "✅ No open Dependabot alerts found."
+            echo "✅ No open Dependabot alerts found. Safe to merge!"
           fi
