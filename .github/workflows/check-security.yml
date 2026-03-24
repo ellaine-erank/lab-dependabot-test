@@ -1,0 +1,14 @@
+name: Security Scan
+on:
+  pull_request:
+
+jobs:
+  check-alerts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scan Dependabot Alerts
+        uses: xalun/dependabot-alert-gate@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # This tells the script to FAIL if it finds Moderate or High alerts
+          fail-on-severity: moderate
