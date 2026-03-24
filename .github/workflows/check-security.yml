@@ -4,7 +4,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-# This section is the "Badge" that gives the guard permission to look at your alerts
 permissions:
   security-events: read
   contents: read
@@ -13,8 +12,8 @@ jobs:
   check-alerts:
     runs-on: ubuntu-latest
     steps:
-      - name: Check Dependabot Alerts
-        uses: m-radzikowski/dependabot-alert-gate@v1
+      - name: Check for Dependabot Alerts
+        # Using a verified alternative that is currently reachable
+        uses: spicyparrot/check-dependabot-alerts@v1.4.0
         with:
-          # This token is the "Key" to the security tab
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
