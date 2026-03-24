@@ -17,15 +17,14 @@ jobs:
 
       - name: Scan for Dependabot Alerts
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # This pulls the token from the "Vault" you just created
+          GH_TOKEN: ${{ secrets.SECURITY_GATE_TOKEN }}
         run: |
-          # This command asks GitHub: "Are there any open alerts for this repo?"
           ALERTS=$(gh api repos/${{ github.repository }}/dependabot/alerts?state=open)
           
-          # Check if the list of alerts is empty ([])
           if [ "$ALERTS" != "[]" ]; then
-            echo "❌ SECURITY ALERT: Open vulnerabilities found in dependencies!"
-            echo "$ALERTS" | jq '.[].security_advisory.summary'
+            echo "❌ SECURITY ALERT: Open vulnerabilities found!"
+            echo "$ALERTS" | jq -r '.[].security_advisory.summary' | sed 's/^/- /'
             exit 1
           else
             echo "✅ No open Dependabot alerts found."
